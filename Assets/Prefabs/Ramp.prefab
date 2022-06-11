@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5260384629878372996}
   - component: {fileID: 4507237321100742175}
   m_Layer: 0
-  m_Name: Ramp Enter Trigger
+  m_Name: Ramp Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

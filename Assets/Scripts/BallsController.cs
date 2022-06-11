@@ -4,7 +4,7 @@ using UnityEngine;
 public class BallsController : MonoBehaviour
 {
     public static BallsController Instance { get; private set; }
-    
+
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] private Transform[] ballHeadPositions;
 
@@ -80,9 +80,11 @@ public class BallsController : MonoBehaviour
         {
             for (var j = 0; j < _balls[i].Count; j++)
             {
+                var current = _balls[i][j];
+                
                 var head = i == 0 ? ballHeadPositions[j] : _balls[i - 1][j].transform;
 
-                var current = _balls[i][j];
+                if (!current.GetComponent<BallController>().IsMoving) continue;
 
                 var distance = Vector3.Distance(head.position, current.transform.position);
                 var target = head.position;
@@ -130,6 +132,20 @@ public class BallsController : MonoBehaviour
             var row = ball.GetComponent<BallController>().Row;
             _balls[row].Remove(ball);
             Destroy(ball);
+        }
+    }
+
+    public void Explode(int row)
+    {
+        for (var i = 0; i < _balls[row].Count; i++)
+        {
+            var current = _balls[row][i];
+
+            var rigidbody = current.GetComponent<Rigidbody>();
+            rigidbody.AddForce(Random.Range(-5, 5) * 100f, 0f, Random.Range(-5, 5) * 100f);
+            
+            var ballController = current.GetComponent<BallController>();
+            ballController.IsMoving = false;
         }
     }
 }
