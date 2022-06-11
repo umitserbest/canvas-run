@@ -4,9 +4,8 @@ public class ObstacleController : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.gameObject.name);
+        if (other.CompareTag("BallHead")) return;
         
-        //var ballController = other.GetComponent<BallController>();
         other.gameObject.GetComponent<MeshRenderer>().enabled = false;
         BallsController.Instance.RemoveBall(other.gameObject);
     }

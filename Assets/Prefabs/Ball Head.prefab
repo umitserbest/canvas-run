@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1364313748844716088}
   m_Layer: 6
   m_Name: Ball Head
-  m_TagString: Untagged
+  m_TagString: BallHead
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

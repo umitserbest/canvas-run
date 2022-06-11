@@ -57,8 +57,6 @@ public class BallsController : MonoBehaviour
     {
         foreach (var head in ballHeadPositions)
         {
-            if (!head.GetComponent<BallController>().IsMovable) continue;
-
             var leftRightPositon = new Vector3();
         
             if (_swipeDirection == Swipe.Left)
@@ -86,8 +84,6 @@ public class BallsController : MonoBehaviour
 
                 var current = _balls[i][j];
 
-                if (!current.GetComponent<BallController>().IsMovable) continue;
-                
                 var distance = Vector3.Distance(head.position, current.transform.position);
                 var target = head.position;
                 var time = Time.deltaTime * distance * speed;
