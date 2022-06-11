@@ -11,6 +11,7 @@ public class BallsController : MonoBehaviour
     [SerializeField] private float speed = 1f;
 
     private readonly List<List<GameObject>> _balls = new();
+    private readonly List<GameObject> _ballRemoveList = new();
 
     private Swipe _swipeDirection;
     
@@ -37,10 +38,19 @@ public class BallsController : MonoBehaviour
         _swipeDirection = swipeDirection;
     }
 
+    private float _cleanTimer;
+    
     private void Update()
     {
         MoveHeads();
         MoveMinions();
+
+        _cleanTimer += Time.deltaTime;
+        if (_cleanTimer > 2f)
+        {
+            _cleanTimer = 0f;
+            CleanBallList();
+        }
     }
 
     private void MoveHeads()
@@ -88,16 +98,35 @@ public class BallsController : MonoBehaviour
     {
         for (var i = 0; i < length; i++)
         {
-            var widthList = new List<GameObject>();
+            var columns = new List<GameObject>();
             
             for (var j = 0; j < width; j++)
             {
                 var ball = Instantiate(ballPrefab, transform, false);
                 ball.transform.localPosition = new Vector3(0 - j, 0.5f, i);
-                widthList.Add(ball);
+                columns.Add(ball);
+                
+                var ballController = ball.GetComponent<BallController>();
+                ballController.Row = i;
+                ballController.Column = j;
             }
 
-            _balls.Add(widthList);
+            _balls.Add(columns);
+        }
+    }
+
+    public void RemoveBall(GameObject ball)
+    {
+        _ballRemoveList.Add(ball);
+    }
+
+    private void CleanBallList()
+    {
+        foreach (var ball in _ballRemoveList)
+        {
+            var row = ball.GetComponent<BallController>().Row;
+            _balls[row].Remove(ball);
+            Destroy(ball);
         }
     }
 }
