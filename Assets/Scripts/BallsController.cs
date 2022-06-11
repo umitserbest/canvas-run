@@ -39,7 +39,7 @@ public class BallsController : MonoBehaviour
     }
 
     private float _cleanTimer;
-    
+
     private void Update()
     {
         MoveHeads();
@@ -58,7 +58,7 @@ public class BallsController : MonoBehaviour
         foreach (var head in ballHeadPositions)
         {
             var leftRightPositon = new Vector3();
-        
+
             if (_swipeDirection == Swipe.Left)
             {
                 leftRightPositon = Vector3.right;
@@ -81,7 +81,7 @@ public class BallsController : MonoBehaviour
             for (var j = 0; j < _balls[i].Count; j++)
             {
                 var current = _balls[i][j];
-                
+
                 var head = i == 0 ? ballHeadPositions[j] : _balls[i - 1][j].transform;
 
                 if (!current.GetComponent<BallController>().IsMoving) continue;
@@ -102,13 +102,13 @@ public class BallsController : MonoBehaviour
         for (var i = 0; i < length; i++)
         {
             var columns = new List<GameObject>();
-            
+
             for (var j = 0; j < width; j++)
             {
                 var ball = Instantiate(ballPrefab, transform, false);
                 ball.transform.localPosition = new Vector3(0 - j, 0.5f, i);
                 columns.Add(ball);
-                
+
                 var ballController = ball.GetComponent<BallController>();
                 ballController.Row = i;
                 ballController.Column = j;
@@ -128,12 +128,14 @@ public class BallsController : MonoBehaviour
         foreach (var ball in _ballRemoveList)
         {
             if (ball == null) continue;
-            
+
             var row = ball.GetComponent<BallController>().Row;
             _balls[row].Remove(ball);
             Destroy(ball);
         }
     }
+
+    private bool _isFinished;
 
     public void Explode(int row)
     {
@@ -143,9 +145,15 @@ public class BallsController : MonoBehaviour
 
             var rigidbody = current.GetComponent<Rigidbody>();
             rigidbody.AddForce(Random.Range(-5, 5) * 100f, 0f, Random.Range(-5, 5) * 100f);
-            
+
             var ballController = current.GetComponent<BallController>();
             ballController.IsMoving = false;
+        }
+
+        if (!_isFinished)
+        {
+            _isFinished = true;
+            CameraController.Instance.OnFinish();
         }
     }
 }
