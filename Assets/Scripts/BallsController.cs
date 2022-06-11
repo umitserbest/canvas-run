@@ -8,14 +8,33 @@ public class BallsController : MonoBehaviour
     [SerializeField] private GameObject ballPrefab;
     [SerializeField] private Transform[] ballHeadPositions;
 
-    private List<List<GameObject>> _balls = new();
+    [SerializeField] private float speed = 1f;
 
+    private readonly List<List<GameObject>> _balls = new();
+
+    private Swipe _swipeDirection;
+    
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
         }
+    }
+
+    private void OnEnable()
+    {
+        SwipeManager.OnSwipeDetected += OnSwipeDetected;
+    }
+
+    private void OnDisable()
+    {
+        SwipeManager.OnSwipeDetected -= OnSwipeDetected;
+    }
+
+    private void OnSwipeDetected(Swipe swipeDirection, Vector2 swipeVelocity)
+    {
+        _swipeDirection = swipeDirection;
     }
 
     private void Update()
@@ -28,9 +47,20 @@ public class BallsController : MonoBehaviour
     {
         foreach (var head in ballHeadPositions)
         {
-            var newPos = head.position - Vector3.forward;
-            var followTime = Time.deltaTime * 1f;
-            head.SetPositionAndRotation(Vector3.Lerp(head.position, newPos, followTime), head.transform.rotation);
+            var leftRightPositon = new Vector3();
+        
+            if (_swipeDirection == Swipe.Left)
+            {
+                leftRightPositon = Vector3.right;
+            }
+            else if (_swipeDirection == Swipe.Right)
+            {
+                leftRightPositon = Vector3.left;
+            }
+
+            var newPosition = head.position - Vector3.forward + leftRightPositon;
+            var time = Time.deltaTime * speed;
+            head.SetPositionAndRotation(Vector3.Lerp(head.position, newPosition, time), head.transform.rotation);
         }
     }
 
@@ -45,7 +75,7 @@ public class BallsController : MonoBehaviour
                 var current = _balls[i][j];
                 var distance = Vector3.Distance(head.position, current.transform.position);
                 var target = head.position;
-                var time = Time.deltaTime * distance * 1f;
+                var time = Time.deltaTime * distance * speed;
 
                 current.transform.SetPositionAndRotation(
                     Vector3.Lerp(current.transform.position, target, time),
