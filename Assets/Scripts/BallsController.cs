@@ -46,7 +46,7 @@ public class BallsController : MonoBehaviour
         MoveMinions();
 
         _cleanTimer += Time.deltaTime;
-        if (_cleanTimer > 2f)
+        if (_cleanTimer > 7f)
         {
             _cleanTimer = 0f;
             CleanBallList();
