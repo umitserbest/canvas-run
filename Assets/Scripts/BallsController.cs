@@ -14,7 +14,7 @@ public class BallsController : MonoBehaviour
     private readonly List<GameObject> _ballRemoveList = new();
 
     private Swipe _swipeDirection;
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -57,6 +57,8 @@ public class BallsController : MonoBehaviour
     {
         foreach (var head in ballHeadPositions)
         {
+            if (!head.GetComponent<BallController>().IsMovable) continue;
+
             var leftRightPositon = new Vector3();
         
             if (_swipeDirection == Swipe.Left)
@@ -83,6 +85,9 @@ public class BallsController : MonoBehaviour
                 var head = i == 0 ? ballHeadPositions[j] : _balls[i - 1][j].transform;
 
                 var current = _balls[i][j];
+
+                if (!current.GetComponent<BallController>().IsMovable) continue;
+                
                 var distance = Vector3.Distance(head.position, current.transform.position);
                 var target = head.position;
                 var time = Time.deltaTime * distance * speed;
@@ -124,6 +129,8 @@ public class BallsController : MonoBehaviour
     {
         foreach (var ball in _ballRemoveList)
         {
+            if (ball == null) continue;
+            
             var row = ball.GetComponent<BallController>().Row;
             _balls[row].Remove(ball);
             Destroy(ball);
